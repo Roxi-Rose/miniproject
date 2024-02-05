@@ -1,6 +1,12 @@
 const express = require('express')  // We import the express application
-const cors = require('cors') // Necessary for localhost
+const cors = require('cors')// Necessary for localhost
+const { unknownEnd } = require('./utils/middleware');
+const morgan = require('morgan'); 
 const app = express() // Creates an express application in app
+
+
+unknownEnd(app);
+app.use(morgan('dev'))
 
 /**
  * Initial application setup
@@ -37,7 +43,7 @@ let currencies = [
 
 /**
  * TESTING Endpoint (Completed)
- * @receives a get request to the URL: http://localhost:3001/
+ * @receives a get request to the URL: http://localhost:3003/
  * @responds with the string 'Hello World!'
  */
 app.get('/', (request, response) => {
@@ -46,7 +52,7 @@ app.get('/', (request, response) => {
 
 /**
  * TODO: GET Endpoint
- * @receives a get request to the URL: http://localhost:3001/api/currency/
+ * @receives a get request to the URL: http://localhost:3003/api/currency/
  * @responds with returning the data as a JSON
  */
 app.get('/api/currency/', (request, response) => {
@@ -55,47 +61,70 @@ app.get('/api/currency/', (request, response) => {
 
 /**
  * TODO: GET:id Endpoint
- * @receives a get request to the URL: http://localhost:3001/api/currency/:id
+ * @receives a get request to the URL: http://localhost:3003/api/currency/:id
  * @responds with returning specific data as a JSON
  */
-app.get('...', (request, response) => {
-
-
+app.get('/api/currency/:id', (request, response) => {
+    const currency = parseInt(request.params.id);
+    const detail =  currencies.find((call) => call.id === currency);
+    if(!detail) {
+      return response.status(404).json({ error: 'resource not found' })
+    }
+    response.json(info);
 })
 
 /**
  * TODO: POST Endpoint
- * @receives a post request to the URL: http://localhost:3001/api/currency,
+ * @receives a post request to the URL: http://localhost:3003/api/currency,
  * with data object enclosed
  * @responds by returning the newly created resource
  */
-app.post('...', (request, response) => {
-
-
-})
+app.post('/api/currency', (request, response) => {
+  const {currrencyCode, country, conversionRate} = request.body;
+  if (!currrencyCode || !country || !conversionRate) {
+    return response.status(400).json( { error: 'content missing' })
+  }
+  const posting = {currrencyCode, country, conversionRate}
+    currencies.push(posting);
+    console.log('posting currency :', posting)
+    response.status(201).json(posting);
+});
 
 /**
  * TODO: PUT:id endpoint
- * @receives a put request to the URL: http://localhost:3001/api/currency/:id/:newRate
+ * @receives a put request to the URL: http://localhost:3003/api/currency/:id/:newRate
  * with data object enclosed
  * Hint: updates the currency with the new conversion rate
  * @responds by returning the newly updated resource
  */
-app.put('...', (request, response) => {
-  
+app.put('/api/currency/:id/:newRate', (request, response) => {
+  const Currency = parseInt(request.params.id);
+  const currencyRatio = parseFloat(request.params.newRate);
+  const ratio = currencies.find((call) => call.id === Currency);
+  if (!ratio) {
+    return response.status(404).json({error : 'resource not found'})
+  }
+  ratio.conversionRate = currencyRatio;
+  response.json(ratio);
+})
+
+//unknownEND
+app.use((request,response) => {
+  response.status(404).json({error: 'unknown endpoint'})
 })
 
 /**
  * TODO: DELETE:id Endpoint
- * @receives a delete request to the URL: http://localhost:3001/api/currency/:id,
+ * @receives a delete request to the URL: http://localhost:3003/api/currency/:id,
  * @responds by returning a status code of 204
  */
-app.post('...', (request, response) => {
-
-
+app.delete('/api/currency/:id', (request, response) => {
+  const discard = parseInt (request.params.id)
+  currencies = currencies.filter((call) => call.id !== discard)
+  response.sendStatus(204);
 })
 
-const PORT = 3001
+const PORT = 3003
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`)
 })

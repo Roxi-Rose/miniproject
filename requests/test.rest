@@ -1,1 +1,29 @@
-GET http://localhost:3001/api/currency/
+GET http://localhost:3003/api/currency/
+
+###GET:ID
+GET http://localhost:3003/api/currency/:2
+
+
+###POST:ID
+POST http://localhost:3003/api/currency
+Content-Type: application/json
+
+{
+  "currencyCode": "CAD",
+  "country": "Canada",
+  "conversionRate": 3
+}
+
+### PUT
+PUT http://localhost:3003/api/currency/1/5.0
+Content-Type: application/json
+
+{
+  "currencyCode": "CAD",
+  "country": "Canada",
+  "conversionRate": 5
+}
+
+### DELETE 
+
+DELETE http://localhost:3003/api/currency/2
