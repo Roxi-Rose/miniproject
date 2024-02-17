@@ -1,11 +1,11 @@
-GET http://localhost:3003/api/currency/
+GET http://localhost:3001/api/currency/
 
 ###GET:ID
-GET http://localhost:3003/api/currency/:2
+GET http://localhost:3001/api/currency/2
 
 
 ###POST:ID
-POST http://localhost:3003/api/currency
+POST http://localhost:3001/api/currency
 Content-Type: application/json
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### PUT
-PUT http://localhost:3003/api/currency/1/5.0
+PUT http://localhost:3001/api/currency/1/5.0
 Content-Type: application/json
 
 {
@@ -26,4 +26,4 @@ Content-Type: application/json
 
 ### DELETE 
 
-DELETE http://localhost:3003/api/currency/2
+DELETE http://localhost:3001/api/currency/2

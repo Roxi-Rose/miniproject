@@ -1,0 +1,103 @@
+const express = require('express');
+const router = express.Router();
+
+
+const currencies = [
+    { 
+      id: 1,
+      currencyCode: "CDN",
+      country: "Canada",
+      conversionRate: 1
+    },
+    {
+      id: 2,
+      currencyCode: "USD",
+      country: "United States of America",
+      conversionRate: 0.75
+    }
+  ]
+
+
+/**
+ * TESTING Endpoint (Completed)
+ * @receives a get request to the URL: http://localhost:3003/
+ * @responds with the string 'Hello World!'
+ */
+router.get('/', (request, response) => {
+    response.send('CODE');
+});
+
+/**
+ * TODO: GET Endpoint
+ * @receives a get request to the URL: http://localhost:3003/api/currency/
+ * @responds with returning the data as a JSON
+ */
+router.get('/api/currency/', (request, response) => {
+    response.json(currencies);
+});
+
+/**
+ * TODO: GET:id Endpoint
+ * @receives a get request to the URL: http://localhost:3003/api/currency/:id
+ * @responds with returning specific data as a JSON
+ */
+router.get('/api/currency/:id', (request, response) => {
+    const currencyId = Number(request.params.id);
+    const currency = currencies.find((c) => c.id === currencyId);
+
+    if (!currency) {
+        return response.status(404).json({ error: 'resource not found' });
+    }
+
+    response.json(currency);
+});
+
+/**
+ * TODO: POST Endpoint
+ * @receives a post request to the URL: http://localhost:3003/api/currency,
+ * with data object enclosed
+ * @responds by returning the newly created resource
+ */
+router.post('/api/currency', (request, response) => {
+    const { currencyCode, country, conversionRate } = request.body;
+    if (!currencyCode || !country || !conversionRate) {
+        return response.status(400).json({ error: 'content missing' });
+    }
+    const posting = { currencyCode, country, conversionRate };
+    currencies.push(posting);
+    console.log('added money: ', posting);
+    response.status(201).json(posting);
+});
+
+/**
+ * TODO: PUT:id endpoint
+ * @receives a put request to the URL: http://localhost:3003/api/currency/:id/:newRate
+ * with data object enclosed
+ * Hint: updates the currency with the new conversion rate
+ * @responds by returning the newly updated resource
+ */
+router.put('/api/currency/:id/:newRate', (request, response) => {
+    const currencyId = parseInt(request.params.id);
+    const newRate = parseFloat(request.params.newRate);
+    const currency = currencies.find((c) => c.id === currencyId);
+
+    if (!currency) {
+        return response.status(404).json({ error: 'resource not found' });
+    }
+
+    currency.conversionRate = newRate;
+    response.json(currency);
+});
+
+/**
+ * TODO: DELETE:id Endpoint
+ * @receives a delete request to the URL: http://localhost:3003/api/currency/:id,
+ * @responds by returning a status code of 204
+ */
+router.delete('/api/currency/:id', (request, response) => {
+    let discard = parseInt(request.params.id);
+    let Updatedcurrencies = currencies.filter((call) => call.id !== discard);
+    response.sendStatus(204);
+});
+
+module.exports = router;
